@@ -1,0 +1,701 @@
+$ set -e
+
+    这行代码之后的任何代码，如果返回一个非0的值，那么整个脚本立即退出，官方的说明是为了防止错误出现滚雪球的现象,如果要增加可读性，可以使用set -o errexit，它的作用与set -e相同
+
+*******************************************************************************************
+source命令用法：
+
+source FileName
+作用:在当前bash环境下读取并执行FileName中的命令。搜索
+注：该命令通常用命令“.”来替代。
+如：source .bash_rc 与 . .bash_rc 是等效的。
+
+*******************************************************************************************
+使用Python模拟浏览器登录并抓取数据:
+
+首先写一个叫screen_login的函数。其核心是定义个浏览器对象br = mechanize.Browser()。这个时候，需要借用浏览器的cookie功能，主要借助于cookielib包。　
+
+为了从HTML文档提取cookies，首先使用cookielib模块的LWPCookieJar()函数创建一个cookie jar的实例。LWPCookieJar()函数将返回一个对象，该对象可以从硬盘加载Cookie，同时还能向硬盘存放Cookie。之后，通过 br.set_cookiejar(cj)将这个cookie jar关联到mechanize的浏览器对象br上。
+
+简单设置一些浏览器属性后，需要定义使用的user-agent。用户代理（User Agent）指的是代表使用者行为的软件，主要是设置浏览器的头文件。
+
+最后是关键的一步，打开登录页面，输入用户名和用户密码。需要使用br.select_form(nr = 0)来找到登录表格。这里nr的设置比较灵活，不同网站的数值不同。然后输入用户名和密码。比如：br['vb_login_username'] = 'Your registered User name'， 这里的vb_login_username也会随着网站本身使用的具体内容而不同。
+
+*******************************************************************************************
+Session直接翻译成中文比较困难，一般都译成时域。在计算机专业术语中，Session是指一个终端用户与交互系统进行通信的时间间隔，通常指从注册进入系统到注销退出系统之间所经过的时间。以及如果需要的话，可能还有一定的操作空间。
+具体到Web中的Session指的就是用户在浏览某个网站时，从进入网站到关闭这个网站所经过的这段时间，也就是用户浏览这个网站所花费的时间。因此从上述的定义中我们可以看到，Session实际上是一个特定的时间概念。
+
+*******************************************************************************************
+ 只要一个文件夹下面有个 __init__.py 文件，那么这个文件夹就可以看做是一个包。
+
+包导入的过程和模块的基本一致，只是导入包的时候会执行此包目录下的 __init__.py 而不是模块里面的语句了。
+
+如果只是单纯的导入包，而包的 __init__.py 中又没有明确的其他初始化操作，那么此包下面的模块是不会自动导入的
+
+********************************************************************************
+XSD是指XML结构定义 ( XML Schemas Definition ),  XSD文件的后缀名为.xsd。
+XML(可扩展标记语言) 的架构定义语言 (XSD) 使您可为 XML 文档定义结构和数据类型
+
+表结构（XSD）就是数据库中我们设定的字段阿、字段类型阿之类的信息
+表内容（XML）就是数据库中我们的数据啦
+
+——你把XML理解成一个数据库，和Access、SQLServer一样的数据库就可以了，不过这个XML的标结构是单独存放的，就是表结构（XSD） 
+*********************************************************************************
+一个包是一个带有特殊文件 __init__.py 的目录。__init__.py 文件定义了包的属性和方法。其实它可以什么也不定义；可以只是一个空文件，但是必须存在。如果 __init__.py 不存在，这个目录就仅仅是一个目录，而不是一个包，它就不能被导入或者包含其它的模块和嵌套包。
+__init__.py 控制着包的导入行为。假如 __init__.py 为空，那么仅仅导入包是什么都做不了的。
+需要在 __init__.py 里把 Module预先导入
+__init__.py 中还有一个重要的变量，叫做 __all__。我们有时会使出一招“全部导入”，也就是这样：
+from PackageName import *
+这时 import 就会把注册在包 __init__.py 文件中 __all__ 列表中的子模块和子包导入到当前作用域中来。以*导入时，package内的module是受__init__.py限制的,没有导入的包就不能调用.
+如果希望调用同一个package中的module，则直接import即可。
+********************************************************************************
+Python *与** 参数问题
+解释：
+      * 用来传递任意个无名字参数，这些参数会一个Tuple的形式访问。
+
+      **用来处理传递任意个有名字的参数，这些参数用dict来访问。
+*********************************************************************************
+标准输入和标准错误 (通常缩写为 stdout 和 stderr) 是内建在每一个 UNIX 系统中的管道。
+当你 print 某些东西时，结果前往 stdout 管道；
+当你的程序崩溃并打印出调试信息 (例如 Python 中的 traceback (错误跟踪)) 的时候，信息前往 stderr 管道
+----------------------------------------
+>>> for i in range(3):
+...     print'Dive in'
+
+Dive in
+Dive in
+Dive in
+>>> import sys
+>>> for i in range(3):
+...     sys.stdout.write('Dive in')
+
+Dive inDive inDive in
+>>> for i in range(3):
+...     sys.stderr.write('Dive in')
+
+Dive inDive inDive in
+
+------------------------------------------
+stdout 是一个类文件对象；调用它的 write 函数可以打印出你给定的任何字符串。
+实际上，这就是 print 函数真正做的事情；它在你打印的字符串后面加上一个硬回车，然后调用 sys.stdout.write 函数。
+在最简单的例子中，stdout 和 stderr 把它们的输出发送到相同的地方
+和 stdout 一样，stderr 并不为你添加硬回车；如果需要，要自己加上。
+stdout 和 stderr 都是类文件对象，但是它们都是只写的。
+它们都没有 read 方法，只有 write 方法。然而，它们仍然是类文件对象，因此你可以将其它任何 (类) 文件对象赋值给它们来重定向其输出。  --------------------------------------------
+
+打印到 stderr
+""向标准错误写入错误信息""是很常见的，所以有一种较快的语法可以立刻导出信息
+----------------------------------------------------
+>>> print 'entering function'
+entering function
+>>> import sys
+>>> print >> sys.stderr, 'entering function'
+entering function
+
+print 语句的快捷语法可以用于写入任何打开的文件 (或者是类文件对象)。
+在这里，你可以将单个print语句重定向到stderr而且不用影响后面的print语句。
+*******************************************************************************
+__name__属性 用于判断当前模块是不是程序入口
+__doc__属性: 模块本身是一个对象，而每个对象都会有一个__doc__属性, 该属性用于描述该对象的作用, 用单引号或双引号来表明该模块（或是类或函数）的作用,如：
+class student:
+    'help'
+    "string"
+    .......
+********************************************************************************* 
+在类的方法必须有个额外的第一个参数 (self),但在调用这个方法的时候不必为这个参数赋值。Python的类的方法的这个特别的参数指代的是 "对象本身"，而按照Python的惯例，它用self来表示。
+
+class Python:
+
+     def selfDemo(self):
+
+          print 'Python,why self?'
+
+p = Python()  # p == self
+
+p.selfDemo()  # ==self.selfDemo()
+********************************************************************************
+XML(可扩展标记语言)从结构上，很像HTML超文本标记语言。但他们被设计的目的是不同的，超文本标记语言被设计用来"显示数据"，其焦点是数据的"外观"。XML被设计用来"传输和存储数据"，其焦点是数据的"内容"。
+
+那么它有如下特征：
+
+    它是有标签对组成，<aa></aa>
+    标签可以有属性：<aa id='123'></aa>
+    标签对可以嵌入数据：<aa>abc</aa>
+    标签可以嵌入子标签（具有层级关系）
+********************************************************************************
+Git分支: 几乎每一种版本控制系统都以某种形式支持分支。使用分支意味着你可以从开发主线上分离开来，然后在不影响主线的同时继续工作。当你确定修改h成功后，就可以将分支合并到你主分支了
+
+git status命令可以列出当前目录所有还没有被git管理的文件和被git管理且被修改但还未提交(git commit)的文件.
+git checkout——检出,最为常用的两种情形是创建分支和切换分支,也可以称为检出分支。
+
+\\\删除 一些 没有 git add 的 文件:
+git clean 参数
+
+    -n 显示 将要 删除的 文件 和  目录
+
+     -f 删除 文件，-df 删除 文件 和 目录
+
+***********************************************************************************
+repo只是google用Python脚本写的调用git的一个脚本，主要是用来下载、管理Android项目的软件仓库。
+repo sync [project] 下载最新本地工作文件，同步 repository 中的代码。 可以指定需要更新的project ， 如果不指定任何参数，会同步整个所有的项目
+
+如果是第一次运行 repo sync ， 则这个命令相当于 git clone ，会把 repository 中的所有内容都拷贝到本地。
+
+如果不是第一次运行 repo sync ， 则相当于 更新 和 自动合并 动作；
+
+repo sync 会更新 .repo 下面的文件。 如果在merge 的过程中出现冲突， 这需要手动运行 git rebase --continue
+
+repo sync -j8: -j是多线程参数, 开启8个线程下载
+*******************************************************************************************
+python中的getattr(object,name)和object.name有什么区别?
+正常情况下没有什么区别,但是如果name不是object的属性,那么区别就显示出来了.如果直接访问一个不存在的属性,那么将会抛出AttributeError异常, 而用getattr则可以返回一个默认值,例如:
+getattr(obj,'sss','emtry'),   如果obj存在sss属性,则返回相关的值,否则默认返回一个'emtry'. 
+************************************************************************************************
+email.mime.multipart.MIMEMultipart()
+msg=MIMEMultipart()  ,用来生成包含多个部分的邮件体的MIME对象,然后填入各个部分,如下:
+msg['From'] = 'Me <me@example.com>'
+msg['To'] = 'You <you@example.com>'
+msg['Subject'] = 'Your picture'
+
+MIME消息由消息头和消息体两大部分组成，在邮件里就是邮件头和邮件体。邮件头与邮件体之间以空行进行分隔。这点可以用文本编辑器（比如记事本）查看一个邮件的源文件就可以清除看到。outlook和foxmail自己就有查看源文件的功能。
+    邮件头包含了发件人、收件人、主题、时间、MIME版本、邮件内容的类型等重要信息。每条信息称为一个域，由域名后加“: ”和信息内容构成，可以是一行，较长的也可以占用多行。域的首行必须“顶头”写，即左边不能有空白字符（空格和制表符）；续行则必须以空白字符打头，且第一个空白字符不是信息本身固有的。
+    邮件体包含邮件的内容，它的类型由邮件头的“Content-Type”域指出。最常见的类型有text/plain(纯文本)和text/html(超文本)。邮件体被分为多个段，每个段又包含段头和段体两部分，这两部分之间也以空行分隔。常见的multipart类型有三种：multipart/mixed, multipart/related和multipart/alternative。从它们的名称，不难推知这些类型各自的含义和用处。它们之间的层次关系可归纳为下图所示：
+
+    可以看出，如果在邮件中要添加附件，必须定义multipart/mixed段；如果存在内嵌资源，至少要定义 multipart/related段；如果纯文本与超文本共存，至少要定义multipart/alternative段。生成邮件就是要生成这各个MIME部分。
+
+    smtplib模块负责连接服务器和发送邮件
+    MIMEAudio：定义邮件的音频数据
+    MIMEImage：定义邮件的图片数据
+    MIMEText：定义邮件的文字数据
+    MIMEMultipart：负责将文字图片音频组装在一起和添加附件
+*************************************************************************************************
+glob模块: 用它可以查找符合特定规则的文件路径名
+glob.glob 返回所有匹配的文件路径列表。
+
+import glob
+ 
+#获取指定目录下的所有图片
+print glob.glob(r"E:/Picture/*/*.jpg")
+ 
+#获取上级目录的所有.py文件
+print glob.glob(r'../*.py') #相对路径
+******************************************************************************
+（1）以r或R开头的python中的字符串表示（非转义的）原始字符串
+    如果是以r开头，那么说明后面的字符，都是普通的字符了，即如果是“\n”那么表示一个反斜杠字符，一个字母n，而不是表示换行了。
+ (2）以u或U开头的字符串表示unicode字符串
+    Unicode是书写国际文本的标准方法。如果你想要用非英语写文本,那么你需要有一个支持Unicode的编辑器。
+*****************************************************************************
+connect()方法用于连接数据库，返回一个数据库连接对象。如果要连接一个位于服务器上名为mysql的MySQL数据库，连接串可以这样写：
+
+db = MySQLdb.connect(host="",user="user",passwd="xxx",db="mysql" )
+
+connect()的参数列表如下：
+
+host，连接的数据库服务器主机名，默认为本地主机(localhost)。
+
+user，连接数据库的用户名，默认为当前用户。
+
+passwd，连接密码，没有默认值。
+
+db，连接的数据库名，没有默认值。
+port，指定数据库服务器的连接端口，默认是3306。
+连接对象的db.close()方法可关闭数据库连接，并释放相关资源。
+******************************************************************************
+为什么在sys.setdefaultencoding之前要写reload(sys)
+
+python 中获得系统默认编码为：
+
+import sys
+print sys.getdefaultencoding()
+
+而修改系统默认编码应写为：
+
+import sys
+reload(sys)
+sys.setdefaultencoding('UTF-8')
+
+先看下python的模块加载过程:
+
+# python -v
+# installing zipimport hook
+import zipimport # builtin
+# installed zipimport hook
+# /usr/local/lib/python2.6/site.pyc matches /usr/local/lib/python2.6/site.py
+import site # precompiled from /usr/local/lib/python2.6/site.pyc
+....
+
+Python运行的时候首先加载了site.py，在site.py文件里有这么一段代码:
+
+if hasattr(sys, "setdefaultencoding"):
+    del sys.setdefaultencoding
+
+在sys加载后,setdefaultencoding方法被删除了,所以我们要通过重新导入sys来设置系统编码.
+*********************************************************************************
+apt-get update 和 upgrade 的区别
+    update 是同步 /etc/apt/sources.list 和 /etc/apt/sources.list.d 中列出的源的索引，这样才能获取到最新的软件包。
+
+    upgrade 是升级已安装的所有软件包，升级之后的版本就是本地索引里的，因此，在执行 upgrade 之前一定要执行 update, 这样才能是最新的。
+
+/etc/apt/sources.list是一个指示apt程序到哪里去获取资源的资源列表文件。apt-get upgnome-opendate之后的内容不会反应在这里。另外，apt-get update只是更新了apt的资源列表，没有真正的对系统执行更新。如果需要，要使用apt-get upgrade来更新。
+************************************************************************************
+上传代码:
+git status
+git add bug_analy.py
+git commit -am'bug_analy.py'  或 git commit -m 'update bug_analy'
+git push ssh://li.ai@172.26.35.81:29418/web/hades HEAD:refs/for/master
+ssh -p 29418 li.ai@172.26.35.81
+git pull
+ssh:（安全外壳协议）Secure Shell 的缩写
+*************************************************************************
+    全局变量报错：UnboundLocalError: local variable 'l' referenced before assignment 
+
+总结：
+
+    内部函数，不修改全局变量可以访问全局变量
+    内部函数，修改同名全局变量，则python会认为它是一个局部变量
+    在内部函数修改同名全局变量之前调用变量名称，python会认为它是一个未定义的局部变量,则引发Unbound-LocalError
+********************************************************************************
+gnome-open http://…
+gnome-open mailto://a@a.com
+gnome-open /home/liai/Desktop/1.avi
+分别是打开浏览器, 发邮件, 本地文件1.avi
+************************************************************************************
+Git常用命令介绍
+git init --初始化项目，刚开始初始化项目的时候使用
+git clone --从服务器上克隆到本地，如果服务器上面已经有项目了，直接使用这个命令clone到本地进行使用。
+git status --查看版本信息
+git add  --添加本地文件
+git commit --提交更改
+git push --tags --将更改推送到服务器 
+**********************************************************************************
+不同的Linux之间copy文件:
+    把当前一个文件copy到远程另外一台主机上:
+    scp /data/suds/document.px 5-document.px myang@172.26.35.149:/tmp/suds/
+**********************************************************************************
+    0. HTML：构造一个网页的内容（如链接，标题等元素的选择）
+
+　　1. CSS: 内容的样式（如鼠标移至链接上时改变它的颜色）
+
+　　2. Javascript：使内容变成动态的（比如用户点击链接的时候弹出一个菜单）
+
+　　3. jQuery: 一个包含容易使用插件的javascript库（如幻灯片效果显示图片）
+
+　　4. Python: 处理数据（如从数据库中读取用户购买记录或推荐用户可能喜欢的产品）
+
+　　5. Django: 一个用Python编写的web框架可以将以上的技术串联起来。并且提供了很多内建的、非常必要的功能。（如用户登录，以及用python容易地任何数据库）用框架能让你的工作大大简化。
+
+**************************************************************************************
+python的相对导入:
+	在使用import语句的时候，可以使用"." 和 ".."，且可以使用"..."来调用上两级的目录中的模块。
+	1. 使用相对导入的目录的平级目录内的所有py文件不允许单独执行
+	2.忌两个py文件循环导入
+	3.使用相对导入非本级目录的py也禁止单独运行
+**************************************************************************************
+	ENGINE=InnoDB ;(数据库引擎,InnoDB 表在创建时必须显示的指定ENGINE =InnoDB; MyISAM是缺省的存储引擎，可以省略ENGINE关键字)
+	DEFAULT CHARSET=latin1 ;(数据库字符集)
+	AUTO_INCREMENT=11 ; (自增主键值, 从11开始自增)
+可以使用 UNIQUE 约束确保在"非主键"列中不输入重复的值。尽管 UNIQUE 约束和 PRIMARY KEY 约束都强制唯一性，但想要强制一列或多列组合（不是主键）的唯一性时应使用 UNIQUE 约束而不是 PRIMARY KEY 约束。
+可以对一个表定义多个 UNIQUE 约束，但只能定义一个 PRIMARY KEY 约束。
+
+select * into target_table from source_table;
+insert into target_table(column1,column2) select column1,5 from source_table; 
+以上两句都是将源表source_table的记录插入到目标表target_table，但两句又有区别。
+第一句（select into from）要求目标表target_table不存在，因为在插入时会自动创建。
+第二句（insert into select from）要求目标表target_table存在，由于目标表已经存在，所以我们除了插入源表source_table的字段外，还可以插入常量
+***************************************************************************************
+    了解itertools模块：
+该模块对迭代和组合是非常有效的。让我们生成一个列表[1，2，3]的所有排列组合,仅需三行Python代码：
+>>> import itertools
+>>> iter = itertools.permutations([1,2,3])             %%%%  permutations: 排列
+>>> list(iter)
+[(1, 2, 3), (1, 3, 2), (2, 1, 3), (2, 3, 1), (3, 1, 2), (3, 2, 1)] 
+
+    dicitonary或set是否存在 这在Python中非常快的。这是因为dict和set使用哈希表来实现。查找效率可以达到O(1)。因此，如果您需要经常检查成员，使用 set 或 dict做为你的容器.
+>>> mylist = ['a', 'b', 'c'] #Slower, check membership with list:
+>>> ‘c’ in mylist
+>>> True
+>>> myset = set(['a', 'b', 'c']) # Faster, check membership with set:
+>>> ‘c’ in myset:
+>>> True
+****************************************************************************************
+当函数的参数不确定时，可以使用*args 和**kwargs，*args 没有key值，**kwargs有key值:
+*args可以当作可容纳多个变量组成的list  
+**kwargs可以当作容纳多个key和value的dictionary 
+************************************************************************************
+'''
+    self.imp.cur.execute('select team.team, bugusers.email from team, \
+            bugusers where bugusers.team_id=team.team_id')
+        list_ = []
+        list_ = self.imp.cur.fetchall()
+        print list_
+    '''
+**********************************************************************************
+IndentationError: unindent does not match any outer indentation level
+导致这种问题的是空格键与TAB键混用, 不能混用, 都用TAB键
+
+***********************************************************************************
+AP编译和BP编译:
+	大多数的手机都含有两个处理器:
+1、操作系统、用户界面和应用程序都在Application Processor(即AP)（应用处理器）上执行，AP一般采用ARM芯片的CPU。运行在Application Processor(AP)的软件包称为AP包,包括操作系统、用户界面和应用程序等;
+2、手机射频通讯控制软件，则运行在另一个分开的CPU上，这个CPU称为Baseband Processor(即BP)（基带处理器）。与Baseband Processor(BP)相关的软件包称为BP包, 包括baseband modem的通信控制软件等.
+***********************************************************************************************
+import datetime
+datetime.datetime.now().isocalendar()
+datetime.date(2014, 6, 8).isocalendar()
+***********************************************************************************************
+	./configure :
+./configure是源代码安装的第一步，主要的作用是对即将安装的软件进行配置，检查当前的环境是否满足要安装软件的依赖关系，但并不是所有的tar包都是源代码的包，楼主可以ls看看有没有configure这个文件，也许你下的是二进制的包，如果是二进制的包，解压后直接就能使用
+*******************************************************************
+&&&&&&&&&git merge和rebase的区别
+假设现在有两个分支 A B
+1. 在B分支上执行 git merge A 后 A就被合到B上了
+2. 在B分支上执行 git rebase A 后，效果与merge是一样的，但是 A就没有了，两个分支就合在一起了。
+
+**********************************************************
+著作权归作者所有。
+商业转载请联系作者获得授权，非商业转载请注明出处。
+作者：张秋怡
+链接：http://www.zhihu.com/question/22689579/answer/22318058
+来源：知乎
+
+一个普通网站访问的过程简单概括一下，对于我们普通的网站访问，涉及到的技术就是：
+	用户操作浏览器访问，浏览器向服务器发出一个 HTTP 请求；服务器接收到 HTTP 请求，Web Server 进行相应的初步处理，使用服务器脚本生成页面；服务器脚本（利用Web Framework）调用本地和客户端传来的数据，生成页面；Web Server 将生成的页面作为 HTTP 响应的 body，根据不同的处理结果生成 HTTP header，发回给客户端；客户端（浏览器）接收到 HTTP 响应，通常第一个请求得到的 HTTP 响应的 body 里是 HTML 代码，于是对 HTML 代码开始解析；解析过程中遇到引用的服务器上的资源（额外的 CSS、JS代码，图片、音视频，附件等），再向 Web Server 发送请求，Web Server 找到对应的文件，发送回来；浏览器解析 HTML 包含的内容，用得到的 CSS 代码进行外观上的进一步渲染，JS 代码也可能会对外观进行一定的处理；用户与页面交互（点击，悬停等等）时，JS 代码对此作出一定的反应，添加特效与动画；交互的过程中可能需要向服务器索取或提交额外的数据（局部的刷新，类似微博的新消息通知），一般不是跳转就是通过 JS 代码（响应某个动作或者定时）向 Web Server 发送请求，Web Server 再用服务器脚本进行处理（生成资源or写入数据之类的），把资源返回给客户端，客户端用得到的资源来实现动态效果或其他改变。
+*****************************************************************************
+linux 如何显示一个文件的某几行(中间几行)
+
+【一】从第3000行开始，显示1000行。即显示3000~3999行
+
+cat filename | tail -n +3000 | head -n 1000
+
+【二】显示1000行到3000行
+
+cat filename| head -n 3000 | tail -n +1000
+
+*注意两种方法的顺序
+
+分解：
+
+    tail -n 1000：显示最后1000行
+
+    tail -n +1000：从1000行开始显示，显示1000行以后的
+
+    head -n 1000：显示前面1000行
+******************************************************************************
+部署flask服务: http://python.jobbole.com/84286/
+supervisor监控: http://python.jobbole.com/84338/
+史上最全的MSSQL复习笔记http:http//www.imooc.com/article/1472
+python资料 https://eastlakeside.gitbooks.io/interpy-zh/content/author.html
+
+******************************************************************************
+得到位置:
+>>> import re
+>>> word = "test"
+>>> s = "test abcd test 1234 testcase testsuite"
+>>> [m.start() for m in re.finditer(word, s)]
+[0, 10, 20, 29]
+
+******************************************************************************
+做为文件夹，desktop在两个系统平台表示如下：
+
+    1、在windows平台：
+
+          desktop.ini是系统可识别的一个文件，作用是存储用户对文件夹的个性设置。
+
+    2、在Linux平台：
+
+          Linux 系统中的Entry Desktop文件以desktop为后缀名。
+
+          Desktop Entry 文件是 Linux 桌面系统中用于描述程序启动配置信息的文件。
+
+          Desktop Entry 文件实现了类似于 Windows 操作系统中快捷方式的功能。
+*********************************************************************************
+自定义软件桌面图标，方便在dash里搜索:
+(使用sudo或者root模式)
+ubuntu默认的快捷方式图标在 /usr/share/applications
+
+root@SWD-AILI0000-D1:$ cd /usr/share/applications/
+root@SWD-AILI0000-D1:/usr/share/applications$ touch navicat.desktop
+root@SWD-AILI0000-D1:/usr/share/applications$ vim navicat.desktop
+
+加入以下内容:
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=Navicat Premium
+Comment=The Smarter Way to manage dadabase
+Exec=/bin/sh "/data/beautify/navicat111_mysql_cs/start_navicat"
+Icon=/data/beautify/navicat_.jpg
+Categories=Application;Database;MySQL;navicat
+Version=1.0
+Type=Application
+Terminal=0    
+     
+然后在dash里输入navicat就可以看到我们刚才加的图标了
+
+********************************************************************************
+一个请求经过代理服务器从局域网发出，然后到达互联网上服务器，这个过程的代理为正向代理。如果一个请求，从互联网过来，先进入代理服务器，再由代理服务器转发给局域网的目标服务器，这个时候，代理服务器为反向代理（相对正向而言）。
+********************************************************************************
+按ESC键 跳到命令模式，然后：
+
+:w   保存文件但不退出vi
+:w file 将修改另外保存到file中，不退出vi
+:w!   强制保存，不推出vi
+:wq  保存文件并退出vi
+:wq! 强制保存文件，并退出vi
+q:  不保存文件，退出vi
+:q! 不保存文件，强制退出vi
+:e! 放弃所有修改，从上次保存文件开始再编辑
+********************************************************************************
+supervisord安装和配置:
+http://www.phperz.com/article/14/1211/40660.html
+********************************************************************************
+********************************************************************************
+string转换为datetime：
+>>> string = '2014-01-08 11:59:58'
+>>> time1 = datetime.datetime.strptime(string,'%Y-%m-%d %H:%M:%S')
+>>> print time1
+2014-01-08 11:59:58
+
+*******************************************************************************
+navicat下载目录在/data/beautify/, cd navicat111_mysql_cs/, 然后运行./start_navicat
+到期后删除.navicat目录,该目录在/home/liai/下    <<=== ls -al
+
+**********************************************************************************
+(1)source /data/aili/hades/libs/create_tables.sql;
+(2)source ~/Desktop/77/hades0.sql;  &&& 必须导入bugusers，team，function，project_list，project_status &&&
+(3)导入存储过程:
+DELIMITER //
+DROP PROCEDURE IF EXISTS import_buginfo;
+CREATE PROCEDURE import_buginfo(IN closed_date datetime, IN bug_id mediumint(6), IN comment_from_cea varchar(255), 
+IN type varchar(30), IN assigner_email varchar(30), IN bug_status varchar(64), IN changeddate datetime, IN summary varchar(255), 
+IN ipr_value int(255), IN deadline datetime, IN branch varchar(64), IN assigned_date datetime, IN verified_sw_date datetime, IN reporter_email varchar(30), 
+IN function varchar(30), IN resolution varchar(64), IN regression varchar(64), IN val_refuse varchar(64), 
+IN priority varchar(64), IN version varchar(64), IN homologation varchar(64),IN refused_date datetime, 
+IN regression_date datetime, IN new_date datetime, IN project_name varchar(50))
+
+BEGIN
+declare functions_id int(3) DEFAULT 1;
+declare reporter_id mediumint(5) DEFAULT 199;
+declare assigner_id mediumint(5) DEFAULT 199;
+
+select function_id into functions_id from function where function_name=function;
+select id into reporter_id from bugusers where email=reporter_email;
+select id into assigner_id from bugusers where email=assigner_email;
+
+replace into base(closed_date,bug_id,comment_from_cea,type,assigner,bug_status,changeddate,summary,
+ipr_value,deadline,branch,assigned_date,verified_sw_date,reporter_email,function_id,resolution,regression,
+val_refuse,priority,version,homologation,refused_date,regression_date,new_date,project_name) values(closed_date,bug_id,comment_from_cea,type,
+assigner_id,bug_status,changeddate,summary,ipr_value,deadline,branch,assigned_date,verified_sw_date,
+reporter_id,functions_id,resolution,regression,val_refuse,priority,version,homologation,refused_date,
+regression_date,new_date,project_name);
+commit; 
+END //  
+DELIMITER ;
+
+***************************************************************************************
+物理备份：是将实际组成数据库的操作系统文件从一处拷贝到另一处的备份过程，通常是从磁盘到磁带
+逻辑备份：是利用SQL语言从数据库中抽取数据并存于二进制文件的过程。最大的缺陷就是备份和恢复速度都慢
+**********************************************************************************
+第一重转换是字符串自身的转义，那么"\\\\"，实际上就是表示两个反斜杠（两个字符），然后 传入正则表达式解析器，因为反斜杠依然是转义字符，那么进行第二重转换，两个反斜杠就代表一个反斜杠
+原生字符串，什么意思？就是只有一重转换了，没有字符串转换了，只在正则表达式内部进行转换了
+*****************************************************************************
+数据库引擎是用于存储、处理和保护数据的核心服务。
+
+***************************************************************************************
+root权限下:mysql_inc.sh
+Xtrabackup的安装使用: http://www.tuicool.com/articles/3UNrQzB
+==>> 需将解压的文件里面的bin目录下的这三个文件拷贝到/usr/bin: cp xtrabackup xtrabackup_55 xtrabackup_56 /usr/bin
+
+(1).xtrabackup只能备份InnoDB和XtraDB 两种数据表
+(2).innobackupex则封装了xtrabackup,同时可以备份MyISAM数据表
+
+  Xtrabackup特点：
+(1)备份过程快速、可靠
+(2)备份过程不会打断正在执行的事务
+(3)能够基于压缩等功能节约磁盘空间和流量
+(4)自动实现备份检验
+(5)还原速度快
+
+innobackupex：这个是其实是下面三个工具的一个perl脚本封装，可以备份MyISAM, InnoDB, XtraDB表。但在处理Myisam时需要加一个读锁。
+(1)xtrabackup：一个由C编译而来的二进制文件，只能备份InnoDB和XtraDB数据。
+(2)xbcrypt：用来加密或解密备份的数据。
+(3)xbstream：用来解压或压缩xbstream格式的压缩文件。
+
+xtrabackup命令只备份数据文件,并不备份数据表结构(.frm),所以使用xtrabackup恢复的时候必须有对应表结构文件(.frm).
+用innobackupex命令，此命令相当于冷备份，复制数据目录的索引，数据，结构文件.
+
+ 参数：
+
+--defaults-file：指定my.cnf参数文件的位置[此配置文件里必须指定datadir]
+--apply-log：同xtrabackup的--prepare参数,一般情况下,在备份完成后，数据尚且不能用于恢复操作，因为备份的数据中可能会包含尚未提交的事务或已经提交但尚未同步至数据文件中的事务。因此，此时数据 文件仍处理不一致状态。--apply-log的作用是通过回滚未提交的事务及同步已经提交的事务至数据文件使数据文件处于一致性状态。
+--copy-back：做数据恢复时将备份数据文件拷贝到MySQL服务器的datadir
+--remote-host=HOSTNAME： 通过ssh将备份数据存储到进程服务器上
+--stream=[tar]：备份文件输出格式, 该文件可在XtarBackup binary文件中获得. 在使用参数stream=tar备份的时候,你的xtrabackup_logfile可能会临时放在/tmp目录下,如果你备份的时候并发写入较大的话,xtrabackup_logfile可能会很大(5G+),很可能会撑满你的/tmp目录,可以通过参数--tmpdir指定目录来解决这个问题.
+--tmpdir=DIRECTORY：当有指定--remote-host or --stream时, 事务日志临时存储的目录, 默认采用MySQL配置文件中所指定的临时目录tmpdir
+--redo-only --apply-log：强制备份日志时只redo,跳过rollback,这在做增量备份时非常必要
+--use-memory=*：该参数在prepare的时候使用,控制prepare时innodb实例使用的内存
+--databases=LIST：列出需要备份的databases,如果没有指定该参数,所有包含MyISAM和InnoDB表的database都会被备份
+--slave-info：备份从库, 加上--slave-info备份目录下会多生成一个xtrabackup_slave_info 文件, 这里会保存主日志文件以及偏移, 文件内容类似于:CHANGE MASTER TO MASTER_LOG_FILE='', MASTER_LOG_POS=0
+--socket=SOCKET：指定mysql.sock所在位置，以便备份进程登录mysql.
+
+====>> 安装出现问题时参考: http://www.ithao123.cn/content-1458799.html
+
+A::备份命令(必须在root权限下才能备份):
+    innobackupex --defaults-file=/etc/mysql/my.cnf --password=admin0 --user=root --database=hades /data/aili/xtrabackup/
+
+B::恢复命令:
+(1)关闭数据库：/etc/init.d/mysql stop
+(2)将/var/lib/mysql/里面的所有数据移走，保证mysql目录为空
+(3)innobackupex --defaults-file=/etc/mysql/my.cnf --apply-log /data/aili/xtrabackup/2016-04-07_15-34-37/
+(4)innobackupex --defaults-file=/etc/mysql/my.cnf --copy-back /data/aili/xtrabackup/2016-04-07_15-34-37/
+(5)将移走的所有数据重新移回mysql目录
+(6)修改权限: chown -R mysql:mysql /var/lib/mysql (必须修改权限 root-->mysql 否则不能重启mysql)
+(7)开启数据库：/etc/init.d/mysql start
+
+C::增量备份（基于全量的增量备份）:
+(1)innobackupex --defaults-file=/etc/mysql/my.cnf --user=root --password=admin0 --incremental --incremental-basedir=/data/aili/xtrabackup/2016-04-07_15-34-37/ /data/aili/xtrabackup/increment_data/
+其中: --incremental 指明是增量备份， --incremental-basedir 指定上次完整备份或者增量备份文件的位置
+(2)innobackupex --apply-log /data/aili/xtrabackup/2016-04-07_15-34-37/  #还原全量备份
+(3)innobackupex --apply-log /data/aili/xtrabackup/2016-04-07_15-34-37/ --incremental-dir=/data/aili/xtrabackup/increment_data/2016-04-07_19-10-59/  #第一次的增量备份应用日志,应用完日志后,将合并到全备上,恢复使用全备恢复 
+(4)按照A还原操作的步骤来恢复数据
+
+用 --no-timestamp 参数可以指定到自己想要的备份文件夹，不受时间命名的文件夹限制
+apply-log的作用是通过回滚未提交的事务及同步已经提交的事务至数据文件使数据文件处于一致性状态.在数据库备份好后，这些备份的数据并不能立即用于恢复，因为这些刚备份的数据里包含了未提交的数据，需要回滚,也包括的已完成的事务在重做日志文件中并没有写入数据文件中，这些数据需要重做！  这个参数正是用于做这些事情，以保证数据文件的一致性！在数据库恢复之前，须先对备份的数据文件应用此参数！
+
+************************************************************************************
+
+更改文件的所有者或组(Linux/Unix 的档案存取权限分为三级 : 档案拥有者、群组、其他):
+// 将rootfs文件夹及其子录的所有者权限(属主)和组(属组)均改为root
+chown -R root:root rootfs
+// 将目录rootfs文件夹及子目录的所有者和组更改为用户liufan和组liufan-desktop
+chown -R liufan:liufan-desktop rootfs
+***********************************************************************************
+
+Wiki是一种超文本系统，是任何人都可以编辑网页的社会性软件
+Redmine是用Ruby开发的基于web的项目管理软件，是用ROR框架开发的一套跨平台项目管理系统，
+
+netstat -nltp 查看端口
+
+
+./configure
+1、configure，这一步一般用来生成 Makefile，为下一步的编译做准备，你可以通过在 configure 后加上参数来对安装进行控制，比如代码:./configure –prefix=/usr 意思是将该软件安装在 /usr 下面，执行文件就会安装在 /usr/bin （而不是默认的 /usr/local/bin),资源文件就会安装在 /usr/share（而不是默认的/usr/local/share）。同时一些软件的配置文件你可以通过指定 –sys-config= 参数进行设定。有一些软件还可以加上 –with、–enable、–without、–disable 等等参数对编译加以控制，你可以通过允许 ./configure –help 察看详细的说明帮助。
+
+2、make，这一步就是编译，大多数的源代码包都经过这一步进行编译（当然有些perl或python编写的软件需要调用perl或python来进行编译）。如果 在 make 过程中出现 error ，你就要记下错误代码（注意不仅仅是最后一行），然后你可以向开发者提交 bugreport（一般在 INSTALL 里有提交地址），或者你的系统少了一些依赖库等，这些需要自己仔细研究错误代码。
+
+3、make insatll，这条命令来进行安装（当然有些软件需要先运行 make check 或 make test 来进行一些测试），这一步一般需要你有 root 权限（因为要向系统写入文件）。
+
+4. make clean 删除临时文件。
+
+******************************************************************************
+*******************************************************************************
+python web部署：nginx+gunicorn+supervisor+flask部署笔记 == >> http://www.jianshu.com/p/be9dd421fb8d
+nginx配置: http://www.open-open.com/lib/view/open1423107543014.html
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+nginx: 本身只能调用静态文件, 它需要依赖网关协议文件来调用脚本. uwsgi是nginx的标准模块, 用于调用其它脚本.
+
+启动:sudo /usr/local/nginx/sbin/nginx [-c nginx.conf]
+
+重启: sudo /usr/local/nginx/sbin/nginx -s reload
+
+关闭: sudo /usr/local/nginx/sbin/nginx -s quit
+
+查看新修改的nginx是否有错误，避免上线导致服务器出错:
+
+    nginx -t -c /usr/local/nginx/conf/nginx.conf
+
+建立软连接:
+    ln -s /etc/nginx/sites-available/default .
+
+默认配置文件在 /usr/local/nginx/conf/nginx.conf
+反向代理: nginx 将对根路径(172.26.35.47:8009)的所有访问请求全部代理到 http://127.0.0.1:8001 的 gunicorn 服务上。
+修改配置文件在/usr/local/nginx/conf/site/default
+#反向代理配置
+server
+{
+    listen 8009;
+    server_name 172.26.35.47;
+
+    location / {
+            try_files $uri @gunicorn_proxy;
+    }
+
+    location @gunicorn_proxy {
+        proxy_pass http://127.0.0.1:8001;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+}
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+supervisor:
+
+(1)生成默认配置文件: echo_supervisord_conf > /etc/supervisord.conf (先查看/etc/supervisor/supervisord.conf是否存在)
+(2)修改默认配置文件supervisord.conf, 在supervisor.conf 配置文件底部添加:
+    [program:hello]
+    command=/usr/bin/gunicorn -b 127.0.0.1:8001 hello:app
+    directory=/home/liai/Desktop
+    startsecs=0
+    stopwaitsecs=0
+    autostart=false
+    autorestart=false
+    stdout_logfile=/home/liai/Desktop/log/gunicorn.log
+    stderr_logfile=/home/liai/Desktop/log/gunicorn.err
+(3)supervisord -c /etc/supervisor/supervisord.conf   (通过配置文件启动supervisor)
+可能出现错误提示: Error: Another program is already listening on a port that one of our HTTP servers is configured to use.  Shut this program down first before starting supervisord. 输入 unlink /var/run/supervisor.sock 来解决.
+(4)supervisorctl status
+(5)supervisorctl start hello (all启动所有项目)
+#(6)如需web管理界面，修改inet_http_server配置, 在supervisord.conf里面添加: 
+[inet_http_server]
+port=127.0.0.1:9001
+并在supervisord.conf里面的 [supervisorctl] 里面添加:
+serverurl=http://127.0.0.1:9001 ; use an http:// url to specify an inet socket
+
+supervisor 加载新的配置启动新的进程: 先用 supervisorctl update(reread) 命令让 supervisor 重新读取配置，然后再启动
+
+
+ ==== >> unix:///var/run/supervisor.sock no such file 
+sudo touch /var/run/supervisor.sock
+sudo chmod 777 /var/run/supervisor.sock
+sudo service supervisor restart
+
+********************************************************************
+********************************************************************
+localhost 是个域名，不是地址，它可以被配置为任意的 IP 地址，不过通常情况下都指向 127.0.0.1
+整个127.* 网段通常被用作 loopback 网络接口的默认地址，按惯例通常设置为 127.0.0.1。这个地址在其他计算机上不能访问
+
+**********************************************************
+WSGI是什么？  http://www.nowamagic.net/academy/detail/1330310
+gevent: 
+使用gevent，可以获得极高的并发性能，但gevent只能在Unix/Linux下运行，在Windows下不保证正常安装和运行。
+由于gevent是基于IO切换的协程，所以最神奇的是，我们编写的Web App代码，不需要引入gevent的包，也不需要改任何代码，仅仅在部署的时候，用一个支持gevent的WSGI服务器(gunicorn)，立刻就获得了数倍的性能提升。
+
+*************************************************************************
+git checkout的主要功能就是迁出一个分支的特定版本。默认是迁出分支的HEAD版本
+git checkout .    : 这条命令把 当前目录所有修改的文件 从HEAD中签出并且把它恢复成未修改时的样子.
+git reset --hard HEAD^
+
+***************************************************************************
+no crontab for ... - using an empty one 解决方案:
+(1)export EDITOR=vim
+(2)crontab -e
+
+***************************************************************************
+使用 Python 和 Flask 设计 RESTful API: 
+http://www.pythondoc.com/flask-restful/first.html
+
+Git配置SSH,并Push到GitHub上的相关流程:
+http://www.open-open.com/lib/view/open1416647023164.html
+************************************************************************
+Linux版的FLASH插件文件名是：libflashplayer.so, 将其copy到 /usr/lib//mozilla/plugins/
+
+我的git库:
+    https://github.com/Arnoaili/hello-world
+克隆一个远程仓库:
+    proxychains git clone https://github.com/Arnoaili/hello-world.git
+使用GitHub将别人的开源项目克隆到自己的远程git库:
+    http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000/00137628548491051ccfaef0ccb470894c858999603fedf000
+上传本地代码:
+proxychains git push -u origin master
